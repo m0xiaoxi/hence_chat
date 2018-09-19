@@ -13,16 +13,31 @@ import logging
 import base64
 import sys
 import readline
+import codecs
+
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
 list_data = []
-url = 'http://47.75.2.217/server.php'
+url = 'http://localhost/hence_chat/server.php'
+rot13 = lambda s : codecs.getencoder("rot-13")(s)[0]
 
 
 def help():
     print "python client.py  [yourname]"
 
+
+
+
+def encrypt(res):
+    return base64.b64encode(res)
+    crypt = prpcrypt(secret_key)
+    return crypt.encrypt(res)
+
+def decrypt(res):
+    return base64.b64decode(res)
+    crypt = prpcrypt(secret_key)
+    return crypt.decrypt(res)
 
 def get_data():
     global sequence
@@ -30,14 +45,14 @@ def get_data():
     res = r.content
     if res == 'null':
 	return False
-    res = base64.b64decode(res)
+    res = decrypt(res)
     f.write(res + '\n')
     user,msg = res.split('<::>')
     sequence += 1
     print("\033[1;32m" + user + ' said >' +  msg + "\033[0m")
 
 def send_data(data):
-    data_enc = base64.b64encode(username + '<::>' + data)
+    data_enc = encrypt(username + '<::>' + data)
     r = requests.post(url+"?op=send", data={"data": data_enc})
     if r.status_code == 200:
         logging.info("data have been send!")
@@ -52,7 +67,7 @@ def period_get():
 
 if __name__ == '__main__':
     if len(sys.argv) == 2:
-	sequence = len(open("client_data.txt","r").readlines()) 
+        sequence = len(open("client_data.txt","r").readlines()) 
         f = open("client_data.txt", "ab")
         username = sys.argv[1]
         t1 = threading.Thread(target=period_get, args=())
