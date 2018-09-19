@@ -30,7 +30,7 @@ def help():
 
 
 def encrypt(res):
-    res = rot13(res)
+    res = base64.b64encode(res)
     res = ''.join(chr(x^ ord(y)) for y in res)
     res = base64.b64encode(res)
     return res
@@ -38,7 +38,7 @@ def encrypt(res):
 def decrypt(res):
     res =  base64.b64decode(res)
     res = ''.join(chr(x^ ord(y)) for y in res)
-    res = rot13(res)
+    res =  base64.b64decode(res)
     return res
 
 def get_data():
