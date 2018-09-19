@@ -28,6 +28,7 @@ def help():
     print "python client.py  [yourname]"
     return 
 
+
 def encrypt(res):
     res = rot13(res)
     res = ''.join(chr(x^ ord(y)) for y in res)
@@ -35,18 +36,17 @@ def encrypt(res):
     return res
 
 def decrypt(res):
-    tmp =  base64.b64decode(res)
+    res =  base64.b64decode(res)
     res = ''.join(chr(x^ ord(y)) for y in res)
     res = rot13(res)
     return res
-
 
 def get_data():
     global sequence
     r = requests.get(url+"?op=read&seq=" + str(sequence + 1))
     res = r.content
     if res == 'null':
-	return False
+	    return False
     res = decrypt(res)
     f.write(res + '\n')
     user,msg = res.split('<::>')
